@@ -19,7 +19,7 @@ app_secret = setting.app.auth.secret
 
 
 # Метод handlers. Этот метод будет вызываться при вызове функции
-# @REQUEST_TIME.time()
+@REQUEST_TIME.time()
 @timing
 def handler(request):
     payload = request.form if request.form else request.json
