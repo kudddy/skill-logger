@@ -1,8 +1,12 @@
 import requests
-from handlers.apig_sdk import signer
+
+from time import sleep
 from json import dumps
 
-sig = signer.Signer()
+from plugins.signer import HttpRequest, Signer
+
+
+sig = Signer()
 sig.Key = "*"
 sig.Secret = "*"
 
@@ -16,16 +20,14 @@ def send_log(log: str, bot_name: str, func_host: str):
         }
     }
 
-    r = signer.HttpRequest("POST",
-                           func_host,
-                           {"Content-Type": "application/json", "x-stage": "RELEASE"},
-                           body=dumps(body))
+    r = HttpRequest("POST",
+                    func_host,
+                    {"Content-Type": "application/json", "x-stage": "RELEASE"},
+                    body=dumps(body))
     sig.Sign(r)
 
     data = requests.request(r.method, r.scheme + "://" + r.host + r.uri, headers=r.headers, data=r.body, verify=False)
 
-
-from time import sleep
 
 while True:
     send_log(log="sdfafsdaf",

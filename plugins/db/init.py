@@ -2,12 +2,8 @@ import requests.auth
 from gql import Client
 from gql.transport.requests import RequestsHTTPTransport
 
-# try:
 from ..config import setting
-from .apig_sdk import signer
-# except Exception as e:
-#     from plugins.config import setting
-#     from plugins.db.apig_sdk import signer
+from ..signer import Signer, HttpRequest
 
 dataspace_url = setting.app.auth.url
 app_key = setting.app.auth.key
@@ -20,10 +16,10 @@ class DataspaceAuth(requests.auth.AuthBase):
             print("APP_SECRET or APP_KEY is undefined. Request will not be signed")
             return r
 
-        sig = signer.Signer()
+        sig = Signer()
         sig.Key = app_key
         sig.Secret = app_secret
-        request = signer.HttpRequest(r.method, r.url, r.headers, r.body.decode('utf-8'))
+        request = HttpRequest(r.method, r.url, r.headers, r.body.decode('utf-8'))
         sig.Sign(request)
         r.headers = request.headers
         return r

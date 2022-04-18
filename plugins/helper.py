@@ -1,11 +1,6 @@
 import time
 import logging
 
-# try:
-from .config import setting
-# except Exception as e:
-#     from plugins.config import setting
-
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)

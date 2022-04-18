@@ -3,14 +3,9 @@ import logging
 from queue import Queue
 from time import sleep
 
-# try:
 from ..tlg import send_message
 from ..message_schema import Request
 from ..cache.storage import memory
-# except Exception as e:
-#     from plugins.tlg import send_message
-#     from message_schema import Request
-#     from plugins.cache.storage import memory
 
 transport = Queue()
 
