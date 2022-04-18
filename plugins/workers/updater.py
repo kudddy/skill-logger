@@ -24,18 +24,18 @@ class Behaviour:
         pass
 
     def what_user_want(self, update, token: str):
-        if update.message.text:
-            text_from_user: str = update.message.text.split("|")
 
-            # валидация входящего сообщения
-            if len(text_from_user) == 2 and text_from_user[1].strip() == SUBSCRIBE:
-                self._subscribe_user(update, token)
-            elif len(text_from_user) == 5 and text_from_user[4].strip() == REG:
-                self._register_bot(update=update,
-                                   token=token)
-            else:
-                self._unknown_intent(update=update,
-                                     token=token)
+        text_from_user = update.message.text.split("|")
+
+        # валидация входящего сообщения
+        if len(text_from_user) == 2 and text_from_user[1].strip() == SUBSCRIBE:
+            self._subscribe_user(update, token)
+        elif len(text_from_user) == 5 and text_from_user[4].strip() == REG:
+            self._register_bot(update=update,
+                               token=token)
+        else:
+            self._unknown_intent(update=update,
+                                 token=token)
 
     @staticmethod
     def _subscribe_user(update, token: str):
