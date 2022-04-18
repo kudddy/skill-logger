@@ -123,7 +123,7 @@ def get_updates_from_tlg(token: str):
     offset = 0
     while True:
         resp = get_updates(token, offset)
-        if resp.ok and len(resp.result) > 0:
+        if resp != -1 and resp.ok and len(resp.result) > 0:
             #
             for updates in resp.result:
                 # TODO get a list of creds for a bot

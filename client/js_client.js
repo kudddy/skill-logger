@@ -21,8 +21,4 @@ function get_data(log, bot_name, func_host) {
     };
     var response = $http.post(func_host, options);
 
-
-
-
-    $jsapi.log(toPrettyString(response));
 }

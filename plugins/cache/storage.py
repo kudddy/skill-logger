@@ -1,9 +1,6 @@
 from typing import List
 
-# try:
 from ..db.query import get_auth_data, get_valid_users
-# except Exception as e:
-#     from plugins.db.query import get_auth_data, get_valid_users
 
 
 # memory_auth = {

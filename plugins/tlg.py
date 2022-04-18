@@ -73,6 +73,9 @@ def get_updates(token: str, offset: int) -> Union[Updates, int]:
     data = request("GET",
                    f"https://api.telegram.org/bot{token}/getUpdates?offset={offset}",
                    headers=headers)
+
+    log.info(f"bot with token - {token} gets update with status - {data.status_code}")
+
     if data.status_code == 200:
         try:
             response = Updates(**data.json())
