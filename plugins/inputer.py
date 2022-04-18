@@ -3,16 +3,10 @@ from threading import Thread
 
 from pydantic import ValidationError
 
-# try:
 from .workers.tlg import start_tlg_worker, transport
 from .workers.updater import get_updates_from_tlg
 from .message_schema import Request
 from .cache.storage import memory
-# except Exception as e:
-#     from plugins.workers.tlg import start_tlg_worker, transport
-#     from plugins.workers.updater import get_updates_from_tlg
-#     from plugins.cache.storage import memory
-#     from message_schema import Request
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)

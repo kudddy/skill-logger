@@ -1,9 +1,6 @@
 from gql import gql
 
-# try:
 from ..db.init import client
-# except Exception as e:
-#     from plugins.db.init import client
 
 
 def insert_valid_user(bot_name: str, chat_id: str):

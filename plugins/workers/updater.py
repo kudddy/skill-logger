@@ -3,14 +3,9 @@ import logging
 from threading import Thread
 from time import sleep
 
-# try:
 from ..tlg import get_updates, send_message
 from ..db.query import insert_valid_user, insert_log_auth_data
 from ..cache.storage import memory
-# except:
-#     from plugins.tlg import get_updates, send_message
-#     from plugins.db.query import insert_valid_user, insert_log_auth_data
-#     from plugins.cache.storage import memory
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -29,17 +24,18 @@ class Behaviour:
         pass
 
     def what_user_want(self, update, token: str):
-        text_from_user: str = update.message.text.split("|")
+        if update.message.text:
+            text_from_user: str = update.message.text.split("|")
 
-        # валидация входящего сообщения
-        if len(text_from_user) == 2 and text_from_user[1].strip() == SUBSCRIBE:
-            self._subscribe_user(update, token)
-        elif len(text_from_user) == 5 and text_from_user[4].strip() == REG:
-            self._register_bot(update=update,
-                               token=token)
-        else:
-            self._unknown_intent(update=update,
-                                 token=token)
+            # валидация входящего сообщения
+            if len(text_from_user) == 2 and text_from_user[1].strip() == SUBSCRIBE:
+                self._subscribe_user(update, token)
+            elif len(text_from_user) == 5 and text_from_user[4].strip() == REG:
+                self._register_bot(update=update,
+                                   token=token)
+            else:
+                self._unknown_intent(update=update,
+                                     token=token)
 
     @staticmethod
     def _subscribe_user(update, token: str):
@@ -128,8 +124,11 @@ def get_updates_from_tlg(token: str):
             for updates in resp.result:
                 # TODO get a list of creds for a bot
 
-                behaviour.what_user_want(update=updates,
-                                         token=token)
+                try:
+                    behaviour.what_user_want(update=updates,
+                                             token=token)
+                except Exception as e:
+                    log.info(f"troubles, error - {str(e)}")
 
                 offset = updates.update_id + 1
 

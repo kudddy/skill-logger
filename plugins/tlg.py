@@ -5,12 +5,7 @@ from requests import request
 
 from pydantic import ValidationError
 
-# try:
-from .helper import timing
 from .message_schema import Updates
-# except Exception as e:
-#     from plugins.helper import timing
-#     from message_schema import Updates
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)

@@ -5,12 +5,12 @@ from ..db.query import get_auth_data, get_valid_users
 
 # memory_auth = {
 #     "sberauto": {
-#         "token": "1970336189:AAGgyNk995DtkqunTE6fVtUHzNBo_G4D51M",
-#         "auth": "50370344-b975-11ec-8422-0242ac120002"
+#         "token": "****",
+#         "auth": "****"
 #     },
 #     "lolo": {
-#         "token": "1970336189:AAGgyNk995DtkqunTE6fVtUHzNBo_G4D51A",
-#         "auth": "50370344-b975-11ec-8422-0242ac120003"
+#         "token": "*****",
+#         "auth": "*****"
 #     }
 # }
 
@@ -25,7 +25,6 @@ class MemoryController:
     def __init__(self):
         self.memory_auth = self._init_cache_memory_auth()
         self.memory_valid_users = self._init_cache_memory_valid_user()
-        print(self.memory_valid_users)
 
     @staticmethod
     def _init_cache_memory_auth():
