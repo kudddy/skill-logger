@@ -6,6 +6,7 @@ app:
   url:
     tlg: https://api.telegram.org/bot<BOT_TOKEN>/sendMessage
   auth:
+    token_for_reg_bots: 23432588358435
     url: https://smapi.pv-api.sbc.space/ds-7043743249627480066/graphql
     key: your_secret_key
     secret: your_secret

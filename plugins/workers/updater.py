@@ -24,7 +24,7 @@ class Behaviour:
         pass
 
     def what_user_want(self, update, token: str):
-
+        # TODO i catch errors in this line
         text_from_user = update.message.text.split("|")
 
         # валидация входящего сообщения
@@ -84,10 +84,13 @@ class Behaviour:
 
         # TODO control count of users
         if memory.check_permission_to_add_new_bot(auth_uid=auth_uid):
+
+            # TODO we don't update cache
             # send data to base with new auth data
             insert_log_auth_data(tlg_token=tlg_token,
                                  auth_token=new_auth_uid,
                                  bot_name=bot_name)
+
 
             # send message that all is fine
             send_message(token=token,
@@ -122,8 +125,6 @@ def get_updates_from_tlg(token: str):
         if resp != -1 and resp.ok and len(resp.result) > 0:
             #
             for updates in resp.result:
-                # TODO get a list of creds for a bot
-
                 try:
                     behaviour.what_user_want(update=updates,
                                              token=token)
