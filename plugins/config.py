@@ -25,6 +25,7 @@ class Main(BaseModel):
     host: str
     port: int
     use_graph_ql: bool
+    update_cache_every: int
 
 
 class Url(BaseModel):

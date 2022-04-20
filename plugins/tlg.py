@@ -7,10 +7,10 @@ from pydantic import ValidationError
 
 from .message_schema import Updates
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 def send_message(token: str,

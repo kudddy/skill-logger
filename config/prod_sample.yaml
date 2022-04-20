@@ -3,10 +3,11 @@ app:
     host: 0.0.0.0
     port: 8080
     use_graph_ql: True
+    update_cache_every: 36000
   url:
     tlg: https://api.telegram.org/bot<BOT_TOKEN>/sendMessage
   auth:
-    token_for_reg_bots: 23432588358435
+    token_for_reg_bots: your_secret_token
     url: https://smapi.pv-api.sbc.space/ds-7043743249627480066/graphql
     key: your_secret_key
     secret: your_secret
