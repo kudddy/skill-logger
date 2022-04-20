@@ -1,6 +1,7 @@
 from typing import List
 
 from ..db.query import get_auth_data, get_valid_users
+from ..config import setting
 
 
 # memory_auth = {
@@ -58,8 +59,8 @@ class MemoryController:
 
     @staticmethod
     def check_permission_to_add_new_bot(auth_uid: str) -> bool:
-        # TODO we need more secure check pass
-        if auth_uid == "23432588358435":
+        # TODO for all bots one token, it is not true
+        if auth_uid == setting.app.auth.token_for_reg_bots:
             return True
 
         return False

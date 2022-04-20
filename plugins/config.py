@@ -32,6 +32,7 @@ class Url(BaseModel):
 
 
 class Auth(BaseModel):
+    token_for_reg_bots: str
     url: str
     key: str
     secret: str
