@@ -26,7 +26,6 @@ class MemoryController:
     def __init__(self):
         self.memory_auth = self._init_cache_memory_auth()
         self.memory_valid_users = self._init_cache_memory_valid_user()
-        print(self.memory_valid_users)
 
         self._init_time = time()
 

@@ -53,6 +53,12 @@ def send_message(token: str,
                    headers=headers,
                    data=json.dumps(payload))
 
+    if data.status_code != 200:
+        try:
+            log.info(f"send message request have problems and response is - {data.json()}")
+        except Exception as e:
+            log.info(f"can't decode json from response, error - {str(e)}")
+
     # маскирование текста
     payload["text"] = "*******"
 
@@ -69,7 +75,7 @@ def get_updates(token: str, offset: int) -> Union[Updates, int]:
                    f"https://api.telegram.org/bot{token}/getUpdates?offset={offset}",
                    headers=headers)
 
-    log.info(f"bot with token - {token} gets update with status - {data.status_code}")
+    log.debug(f"bot with token - {token} gets update with status - {data.status_code}")
 
     if data.status_code == 200:
         try:
@@ -78,4 +84,10 @@ def get_updates(token: str, offset: int) -> Union[Updates, int]:
         except ValidationError as e:
             return -1
     else:
+        try:
+            log.info(f"something wrong with bot - {token} gets update with status - {data.status_code} and payload - {data.json()}")
+        except Exception as e:
+            log.info(f"can't decode json from response, error - {str(e)}")
         return -1
+
+
