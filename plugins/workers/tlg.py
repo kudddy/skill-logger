@@ -31,7 +31,7 @@ def start_tlg_worker():
                     if not data.ok:
                         log.info(
                             f"something wrong, problems with bot name - {request.DATA.bot_type} or token - "
-                            f"{token}")
+                            f"{token} with payload - {data}")
 
             else:
                 log.info(f"something wrong, we don't have users with bot name - {request.DATA.bot_type} or token - "

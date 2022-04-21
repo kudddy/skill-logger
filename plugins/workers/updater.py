@@ -91,6 +91,9 @@ class Behaviour:
                                  auth_token=new_auth_uid,
                                  bot_name=bot_name)
 
+            memory.update_memory_auth_cache(tlg_token=tlg_token,
+                                            auth_token=new_auth_uid,
+                                            bot_name=bot_name)
 
             # send message that all is fine
             send_message(token=token,

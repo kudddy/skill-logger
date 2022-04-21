@@ -1,5 +1,5 @@
 from typing import List
-
+from time import time
 from ..db.query import get_auth_data, get_valid_users
 from ..config import setting
 
@@ -27,6 +27,15 @@ class MemoryController:
         self.memory_auth = self._init_cache_memory_auth()
         self.memory_valid_users = self._init_cache_memory_valid_user()
 
+        self._init_time = time()
+
+    def _update_cache(self):
+        if time() - self._init_time > setting.app.main.update_cache_every:
+            self._init_time = time()
+
+            self.memory_auth = self._init_cache_memory_auth()
+            self.memory_valid_users = self._init_cache_memory_valid_user()
+
     @staticmethod
     def _init_cache_memory_auth():
         memory_auth = get_auth_data()
@@ -39,11 +48,11 @@ class MemoryController:
     @staticmethod
     def _init_cache_memory_valid_user():
         valid_users = get_valid_users()
-
         normalized_valid_users = {}
         for d in valid_users.get("searchLogValidUser").get("elems"):
             if d.get("botName") in normalized_valid_users:
-                normalized_valid_users[d.get("botName")].append(d.get("chatId"))
+                if not d.get("chatId") in normalized_valid_users[d.get("botName")]:
+                    normalized_valid_users[d.get("botName")].append(d.get("chatId"))
             else:
                 normalized_valid_users[d.get("botName")] = [d.get("chatId")]
 
@@ -51,18 +60,21 @@ class MemoryController:
 
     def check_user(self, token: str, auth_uid: str) -> str:
 
+        self._update_cache()
+
         for bot_name, v in self.memory_auth.items():
             if v.get("token") == token and v.get("auth") == auth_uid:
                 return bot_name
 
         return "not_valid_user"
 
-    @staticmethod
-    def check_permission_to_add_new_bot(auth_uid: str) -> bool:
+    def check_permission_to_add_new_bot(self, auth_uid: str) -> bool:
+
+        self._update_cache()
+
         # TODO for all bots one token, it is not true
         if auth_uid == setting.app.auth.token_for_reg_bots:
             return True
-
         return False
 
     def get_valid_users(self, bot_name: str) -> list:
@@ -75,16 +87,26 @@ class MemoryController:
         return all_tokens
 
     def update_cache_with_valid_users(self, chat_id: int, bot_name: str):
+
         if bot_name in self.memory_valid_users:
-            self.memory_valid_users[bot_name].append(chat_id)
+            self.memory_valid_users[bot_name].append(str(chat_id))
         else:
-            self.memory_valid_users[bot_name] = [chat_id]
+            self.memory_valid_users[bot_name] = [str(chat_id)]
+
+    def update_memory_auth_cache(self, tlg_token: str, auth_token: str, bot_name: str):
+
+        self.memory_auth.update({
+            bot_name: {
+                "token": tlg_token,
+                "auth": auth_token
+            }
+        })
 
     def get_token_by_bot_name(self, bot_name: str) -> str:
         return self.memory_auth.get(bot_name, {}).get("token", "")
 
     def user_already_subscribe(self, bot_name: str, chat_id: str):
-        if chat_id in self.memory_valid_users.get(bot_name, []):
+        if str(chat_id) in self.memory_valid_users.get(bot_name, []):
             return True
         return False
 
