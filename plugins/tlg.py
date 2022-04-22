@@ -1,7 +1,10 @@
 import json
 import logging
+import requests
+
 from typing import Union
 from requests import request
+from time import sleep
 
 from pydantic import ValidationError
 
@@ -11,6 +14,37 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 log.setLevel(logging.INFO)
+
+
+class Retry:
+    def __init__(self, retry=5, time_to_sleep=15):
+        self._retry = retry
+        self._count = 0
+        self._time_to_sleep = time_to_sleep
+
+    def send(self, method: str,
+             url: str,
+             headers: dict):
+
+        try:
+            data = request(method,
+                           url,
+                           headers=headers)
+            return data
+
+        except requests.exceptions.ConnectionError:
+            log.info("problems with request, start retry")
+
+            self._count += 1
+
+            if self._retry > self._count:
+                sleep(self._time_to_sleep)
+                return self.send(method, url, headers)
+            else:
+                return -1
+
+
+retry = Retry()
 
 
 def send_message(token: str,
@@ -71,9 +105,17 @@ def get_updates(token: str, offset: int) -> Union[Updates, int]:
     headers = {
         "Content-Type": "application/json"
     }
-    data = request("GET",
-                   f"https://api.telegram.org/bot{token}/getUpdates?offset={offset}",
-                   headers=headers)
+    # data = request("GET",
+    #                f"https://api.telegram.org/bot{token}/getUpdates?offset={offset}",
+    #                headers=headers)
+
+    data = retry.send("GET",
+                      f"https://api.telegram.org/bot{token}/getUpdates?offset={offset}",
+                      headers=headers)
+
+    if data == -1:
+        log.warning("long timeout")
+        return -1
 
     log.debug(f"bot with token - {token} gets update with status - {data.status_code}")
 
@@ -85,9 +127,11 @@ def get_updates(token: str, offset: int) -> Union[Updates, int]:
             return -1
     else:
         try:
-            log.info(f"something wrong with bot - {token} gets update with status - {data.status_code} and payload - {data.json()}")
+            log.info(
+                f"something wrong with bot - "
+                f"{token} gets update with status - "
+                f"{data.status_code} and payload - {data.json()}"
+            )
         except Exception as e:
             log.info(f"can't decode json from response, error - {str(e)}")
         return -1
-
-
