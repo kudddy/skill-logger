@@ -1,8 +1,7 @@
 from typing import List
 from time import time
-from ..db.query import get_auth_data, get_valid_users
+from ..db.query import get_auth_data, get_valid_users, get_rule_model_data
 from ..config import setting
-
 
 # memory_auth = {
 #     "sberauto": {
@@ -21,11 +20,18 @@ from ..config import setting
 #
 # }
 
+memory_user_rule_model = {
+    432542345: ("all", 435131251235, 'sberauto')
+}
+
+rule_model = "only_errors"
+
 
 class MemoryController:
     def __init__(self):
         self.memory_auth = self._init_cache_memory_auth()
         self.memory_valid_users = self._init_cache_memory_valid_user()
+        self.memory_users_role_model = self._init_cache_memory_rule_model()
 
         self._init_time = time()
 
@@ -35,6 +41,7 @@ class MemoryController:
 
             self.memory_auth = self._init_cache_memory_auth()
             self.memory_valid_users = self._init_cache_memory_valid_user()
+            self.memory_rule_model = self._init_cache_memory_rule_model()
 
     @staticmethod
     def _init_cache_memory_auth():
@@ -44,6 +51,23 @@ class MemoryController:
             k.get("botName"): {"token": k.get("tlgToken"), "auth": k.get("authToken")} for k in
             memory_auth.get("searchLogAuthData").get("elems")
         }
+
+    @staticmethod
+    def _init_cache_memory_rule_model():
+
+        memory_rule_model = get_rule_model_data()
+
+        data = memory_rule_model.get("searchLogValidUser").get("elems")
+
+        struct_data = {}
+
+        for v in data:
+            if v.get("chatId") in struct_data:
+                struct_data[v.get("chatId")].append((v.get("ruleType"), v.get("id"), v.get("botName")))
+            else:
+                struct_data[v.get("chatId")] = [(v.get("ruleType"), v.get("id"), v.get("botName"))]
+
+        return struct_data
 
     @staticmethod
     def _init_cache_memory_valid_user():
@@ -86,6 +110,14 @@ class MemoryController:
             all_tokens.append(v.get("token"))
         return all_tokens
 
+    def get_bot_name_by_token(self, token: str):
+
+        for k, v in self.memory_auth.items():
+            if v.get("token") == token:
+                return k
+
+        return ""
+
     def update_cache_with_valid_users(self, chat_id: int, bot_name: str):
 
         if bot_name in self.memory_valid_users:
@@ -114,6 +146,28 @@ class MemoryController:
         if bot_name in self.memory_auth:
             return True
         return False
+
+    def get_user_rule(self, chat_id: str, bot_name: str) -> str:
+        for data in self.memory_users_role_model.get(chat_id):
+            if bot_name == data[2]:
+                return data[0]
+        return ""
+
+    def get_user_id_for_update_rule(self, chat_id: str, bot_name: str):
+        for data in self.memory_users_role_model.get(chat_id):
+            if data[2] == bot_name:
+                return data[1]
+        return ""
+
+    def update_memory_user_rule(self, chat_id: str, rule: str, id_: str, bot_name: str):
+        data = self.memory_users_role_model.get(chat_id)
+
+        for k, v in enumerate(data):
+            if bot_name == v[2]:
+                data.pop(k)
+                data.append((rule, id_, bot_name,))
+
+        self.memory_users_role_model[chat_id] = data
 
 
 memory = MemoryController()

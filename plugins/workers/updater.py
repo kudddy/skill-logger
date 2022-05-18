@@ -4,7 +4,7 @@ from threading import Thread
 from time import sleep
 
 from ..tlg import get_updates, send_message
-from ..db.query import insert_valid_user, insert_log_auth_data
+from ..db.query import insert_valid_user, insert_log_auth_data, update_rule_model_data
 from ..cache.storage import memory
 
 logging.basicConfig(level=logging.DEBUG)
@@ -33,6 +33,13 @@ class Behaviour:
         elif len(text_from_user) == 5 and text_from_user[4].strip() == REG:
             self._register_bot(update=update,
                                token=token)
+        elif text_from_user[0] == "/change" and memory.user_already_subscribe(
+            bot_name=memory.get_bot_name_by_token(token),
+            chat_id=update.message.chat.id
+        ):
+
+            self._update_rule_model(update=update,
+                                    token=token)
         else:
             self._unknown_intent(update=update,
                                  token=token)
@@ -85,7 +92,6 @@ class Behaviour:
         # TODO control count of users
         if memory.check_permission_to_add_new_bot(auth_uid=auth_uid):
 
-            # TODO we don't update cache
             # send data to base with new auth data
             insert_log_auth_data(tlg_token=tlg_token,
                                  auth_token=new_auth_uid,
@@ -114,6 +120,37 @@ class Behaviour:
         send_message(token=token,
                      chat_id=update.message.chat.id,
                      text="oh no, i don't known what you want❌")
+
+    @staticmethod
+    def _update_rule_model(update, token: str):
+
+        bot_name = memory.get_bot_name_by_token(token)
+
+        chat_id = str(update.message.chat.id)
+        user_rule = memory.get_user_rule(chat_id=chat_id, bot_name=bot_name)
+
+        if user_rule == "all":
+            new_user_rule = "only_errors"
+        else:
+            new_user_rule = "all"
+
+        id_ = memory.get_user_id_for_update_rule(chat_id, bot_name)
+
+        # update database
+        new_id = update_rule_model_data(id_=id_,
+                                        chat_id=chat_id,
+                                        rule_type=new_user_rule)
+
+        # update local cache
+        memory.update_memory_user_rule(chat_id=chat_id,
+                                       rule=new_user_rule,
+                                       id_=new_id,
+                                       bot_name=bot_name)
+
+        # send message what all be good
+        send_message(token=token,
+                     chat_id=update.message.chat.id,
+                     text=f"role model change was successful. new role is {new_user_rule}")
 
 
 behaviour = Behaviour()

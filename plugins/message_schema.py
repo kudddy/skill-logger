@@ -14,6 +14,7 @@ example_request = {
 class Data(BaseModel):
     log_info: str
     bot_type: str
+    error_status: bool = None
     consumer_ids: List[int] = None
 
 

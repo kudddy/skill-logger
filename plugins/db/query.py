@@ -65,3 +65,39 @@ def get_valid_users():
       }
     }""")
     return client.execute(query)
+
+
+def get_rule_model_data():
+    query = gql("""query {
+      searchLogValidUser{
+        elems {
+          id,
+          botName,
+          chatId,
+          ruleType
+        }
+      }
+    }""")
+    return client.execute(query)
+
+
+def update_rule_model_data(id_: str, chat_id: str, rule_type: str):
+    query = gql("""mutation ($id: ID!, $chatId: String!, $ruleType: String!){
+      p1: packet {
+        updateLogValidUser(input: {
+          id: $id,
+          chatId: $chatId,
+          ruleType: $ruleType
+        }){
+          id
+        }
+      }
+    }""")
+    variable_values = {
+        "id": id_,
+        "chatId": chat_id,
+        "ruleType": rule_type
+    }
+
+    return client.execute(query, variable_values=variable_values).get("p1", {})\
+        .get("updateLogValidUser", {}).get("id", "")

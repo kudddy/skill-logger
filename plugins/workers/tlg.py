@@ -21,17 +21,34 @@ def start_tlg_worker():
             request: Request = transport.get_nowait()
             list_of_users = memory.get_valid_users(request.DATA.bot_type)
             token = memory.get_token_by_bot_name(request.DATA.bot_type)
+            error_status = request.DATA.error_status
             if len(list_of_users) > 0 and len(token) > 0:
                 for chat_id in memory.get_valid_users(request.DATA.bot_type):
-                    data = send_message(
+                    # TODO проверка на ролевую модуль
+
+                    user_role = memory.get_user_rule(chat_id=chat_id,
+                                                     bot_name=request.DATA.bot_type)
+
+                    send = False
+                    if user_role == "all":
+                        send = True
+
+                    elif user_role == "only_errors":
+                        if error_status:
+                            send = True
+
+                    if send:
+                        data = send_message(
                             token=token,
                             text=request.DATA.log_info,
                             chat_id=chat_id
-                    )
-                    if not data.ok:
-                        log.info(
-                            f"something wrong, problems with bot name - {request.DATA.bot_type} or token - "
-                            f"{token} with payload - {data}")
+                        )
+                        if not data.ok:
+                            log.info(
+                                f"something wrong, problems with bot name - {request.DATA.bot_type} or token - "
+                                f"{token} with payload - {data}")
+
+
 
             else:
                 log.info(f"something wrong, we don't have users with bot name - {request.DATA.bot_type} or token - "
