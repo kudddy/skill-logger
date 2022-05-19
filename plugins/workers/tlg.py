@@ -34,7 +34,7 @@ def start_tlg_worker():
                         send = True
 
                     elif user_role == "only_errors":
-                        if error_status:
+                        if error_status or request.legacy_mode():
                             send = True
 
                     if send:

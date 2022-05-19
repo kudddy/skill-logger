@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import List
 
+from pydantic.typing import NoneType
+
 example_request = {
     "MESSAGE_NAME": "LOGGER_INFO",
     "DATA": {
@@ -21,6 +23,11 @@ class Data(BaseModel):
 class Request(BaseModel):
     MESSAGE_NAME: str
     DATA: Data
+
+    def legacy_mode(self):
+        if isinstance(self.DATA.error_status, NoneType):
+            return True
+        return False
 
 
 # update answer from tlg
