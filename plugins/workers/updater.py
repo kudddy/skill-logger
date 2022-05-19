@@ -153,7 +153,7 @@ class Behaviour:
         # send message what all be good
         send_message(token=token,
                      chat_id=update.message.chat.id,
-                     text=f"role model change was successful. new role is {new_user_rule}")
+                     text=f"role model change was successful. new role is {new_user_rule} 😎")
 
 
 behaviour = Behaviour()
