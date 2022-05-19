@@ -73,6 +73,9 @@ class Behaviour:
                 insert_valid_user(bot_name=bot_name,
                                   chat_id=update.message.chat.id)
 
+                # TODO dirty hack
+                memory.update_memory_users_role_model()
+
                 # send what all is fine
                 send_message(token=token,
                              chat_id=update.message.chat.id,

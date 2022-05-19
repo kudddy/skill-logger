@@ -35,6 +35,9 @@ class MemoryController:
 
         self._init_time = time()
 
+    def update_memory_users_role_model(self):
+        self.memory_users_role_model = self._init_cache_memory_rule_model()
+
     def _update_cache(self):
         if time() - self._init_time > setting.app.main.update_cache_every:
             self._init_time = time()

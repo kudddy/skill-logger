@@ -16,7 +16,8 @@ def send_log(log: str, bot_name: str, func_host: str):
         "MESSAGE_NAME": "LOGGER_INFO",
         "DATA": {
             "log_info": log,
-            "bot_type": bot_name
+            "bot_type": bot_name,
+            "error_status": True
         }
     }
 
@@ -34,6 +35,6 @@ def send_log(log: str, bot_name: str, func_host: str):
 # while True:
 
 send_log(log="RP123| 14.08.2022 15:00| 200",
-         bot_name="SberLogisticaServiceBot",
-         func_host="https://smapi.pv-api.sbc.space/fn_df4f75ea_c184_4999_92ae_5f0f20ec9f2b")
+         bot_name="sberauto",
+         func_host="https://smapi.pv-api.sbc.space/fn_b263c82a_f5ca_4c12_bd12_30e2ed249c9b")
 
