@@ -3,35 +3,15 @@ from time import time
 from ..db.query import get_auth_data, get_valid_users, get_rule_model_data
 from ..config import setting
 
-# memory_auth = {
-#     "sberauto": {
-#         "token": "****",
-#         "auth": "****"
-#     },
-#     "lolo": {
-#         "token": "*****",
-#         "auth": "*****"
-#     }
-# }
-
-# memory_map = {
-#     "sberauto": [123412, 432542345, 432532453425],
-#     "lolo": [234124, 23412342314, 213421342134]
-#
-# }
-
-memory_user_rule_model = {
-    432542345: ("all", 435131251235, 'sberauto')
-}
-
-rule_model = "only_errors"
-
 
 class MemoryController:
     def __init__(self):
-        self.memory_auth = self._init_cache_memory_auth()
-        self.memory_valid_users = self._init_cache_memory_valid_user()
-        self.memory_users_role_model = self._init_cache_memory_rule_model()
+        try:
+            self.memory_auth = self._init_cache_memory_auth()
+            self.memory_valid_users = self._init_cache_memory_valid_user()
+            self.memory_users_role_model = self._init_cache_memory_rule_model()
+        except:
+            pass
 
         self._init_time = time()
 
@@ -151,13 +131,14 @@ class MemoryController:
         return False
 
     def get_user_rule(self, chat_id: str, bot_name: str) -> str:
-        for data in self.memory_users_role_model.get(chat_id):
+        for data in self.memory_users_role_model.get(chat_id, ()):
             if bot_name == data[2]:
                 return data[0]
         return ""
 
+    # TODO неправильное название метода
     def get_user_id_for_update_rule(self, chat_id: str, bot_name: str):
-        for data in self.memory_users_role_model.get(chat_id):
+        for data in self.memory_users_role_model.get(chat_id, ()):
             if data[2] == bot_name:
                 return data[1]
         return ""

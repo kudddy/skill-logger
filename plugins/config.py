@@ -13,10 +13,10 @@ def yaml_config_settings_source() -> Dict[str, Any]:
     when reading `config.json`
     """
     try:
-        with open("config/prod.yaml", 'r') as stream:
+        with open("config/prod_prod.yaml", 'r') as stream:
             config = yaml.safe_load(stream)
     except:
-        with open("function/config/prod.yaml", 'r') as stream:
+        with open("function/config/prod_prod.yaml", 'r') as stream:
             config = yaml.safe_load(stream)
     return config
 

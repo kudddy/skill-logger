@@ -37,7 +37,6 @@ class Behaviour:
             bot_name=memory.get_bot_name_by_token(token),
             chat_id=update.message.chat.id
         ):
-
             self._update_rule_model(update=update,
                                     token=token)
         else:

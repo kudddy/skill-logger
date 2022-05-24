@@ -17,7 +17,6 @@ class FlaskApp:
         @app.route("/", methods=['POST'])
         def post():
             try:
-                print(request)
                 data = request.form if request.form else request.json
                 res = inputter(data)
                 if request.method == "POST":
